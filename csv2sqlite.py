@@ -58,7 +58,7 @@ if __name__ == '__main__':
   campi_dom = ['id','languagecode','category','type','question','explanation','freeTextAnswer','severity']
   campi_risp = ['id','question','answer','correct','sort']
 
-  prog_dom = 1  # partenza progressivo 'id' nella tabella 'question'
+  prog_dom = 20  # partenza progressivo 'id' nella tabella 'question'
   prog_risp = 1 # partenza progressivo 'id' nella tabella 'answer'
   
   # FINE - Parametri da inserire PRIMA DI ESEGUIRE LO SCRIPT
@@ -71,19 +71,17 @@ if __name__ == '__main__':
   # Carico il diz delle soluzioni
   f_sol = open(path+filename+'_SOL.txt','r')
   diz_sol = {}
+  list_sol = []
   for riga in f_sol:
-    id_dom,valore = riga.split('=')
-    valore = valore.replace('\r\n','')	# elimina i caratteri fine riga e ritorno di windows
-    diz_sol[int(id_dom)]=valore
+    valore = riga.replace('\n','')	# elimina i caratteri fine riga e ritorno di windows
+    list_sol.append('('+valore+')')
 
   f_sol.close
   
   etichette,nrec,diz_curr = csv_read(path,filename+'_RIS'+est,sep)
-  #print diz_curr[14]
-  #print etichette
+  
+  id_sol = 0
   for diz in diz_curr:
-
-    #riga_dom['id'] = int(diz['indice'])
     riga_dom['id'] = prog_dom
     riga_dom['languagecode'] = 'it'
     riga_dom['category'] = filename[:4]
@@ -94,16 +92,21 @@ if __name__ == '__main__':
     riga_dom['freeTextAnswer'] = ''
     riga_dom['severity'] = 1
 
-    
+    diz_sol[prog_dom]=list_sol[id_sol] # riempie il diz delle soluzioni
+    #print str(prog_dom),diz_sol[prog_dom]
+    id_sol += 1
+
     i = 0
     for l in ['(A)','(B)','(C)','(D)','(E)']:
       riga_risp['id'] = prog_risp
       riga_risp['question'] =riga_dom['id']
       riga_risp['answer']=diz[l]
-      if '('+diz_sol[riga_dom['id']]+')' == l:
+      
+      if diz_sol[prog_dom] == l:
         riga_risp['correct'] = 1
       else:
         riga_risp['correct'] = 0
+
       riga_risp['sort']= i
       i += 1
       prog_risp += 1 
