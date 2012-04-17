@@ -90,8 +90,8 @@ if __name__ == '__main__':
     riga_dom['type'] = 0
     #riga_dom['question'] = '('+ filename[:4]+'.'+str('%03d'%prog_dom)+') '+diz['domanda']
     riga_dom['question'] = diz['domanda']
-    riga_dom['explanation'] = ''
-    riga_dom['freeTextAnswer'] = 'NULL'
+    riga_dom['explanation'] = 'Spiegazione della risposta esatta'
+    riga_dom['freeTextAnswer'] = ''
     riga_dom['severity'] = 1
 
     
