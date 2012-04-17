@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import csv
+import platform
 
 def csv_read(path,filename,sep):
   f_input = open(path+filename,'rb')
@@ -47,9 +48,18 @@ if __name__ == '__main__':
   righe_sql = []
   tmp_campi = ''
   
+  sistema = platform.system()
+  
   # INIZIO - Parametri da inserire PRIMA DI ESEGUIRE LO SCRIPT
 
-  path = './dati/LINGUE_STRANIERE_830/A245_TXT/A245_003/'
+  # modificare il path in base al sistema operativo usato
+  if sistema == 'Linux':
+    path = './dati/LINGUE_STRANIERE_830/A245_TXT/A245_003/'
+    fine_riga = '\n'
+  if sistema == 'Windows':
+    path = 'dati\\LINGUE_STRANIERE_830\\A245_TXT\\A245_003\\'
+    fine_riga = '\r\n'
+
   filename = 'A245_003_fra_30'
 
   est = '.txt'
@@ -73,7 +83,7 @@ if __name__ == '__main__':
   diz_sol = {}
   list_sol = []
   for riga in f_sol:
-    valore = riga.replace('\n','')	# elimina i caratteri fine riga e ritorno di windows
+    valore = riga.replace(fine_riga,'')	# elimina i caratteri fine riga e ritorno di windows
     list_sol.append('('+valore+')')
 
   f_sol.close

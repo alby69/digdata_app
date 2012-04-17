@@ -2,10 +2,20 @@
 # coding: utf-8
 
 import re
+import platform
+
 
 # INIZIO - Parametri da inserire PRIMA DI ESEGUIRE LO SCRIPT
 
-path = './dati/LINGUE_STRANIERE_830/A245_TXT/A245_003/'  # imposta il percorso alla cartella corrente
+# modificare il path in base al sistema operativo usato
+if sistema == 'Linux':
+  path = './dati/LINGUE_STRANIERE_830/A245_TXT/A245_003/'
+  fine_riga = '\n'
+if sistema == 'Windows':
+  path = 'dati\\LINGUE_STRANIERE_830\\A245_TXT\\A245_003\\'
+  fine_riga = '\r\n'
+
+
 nome_file = 'A245_003_fra_30_TEST' # nome del file
 est = 'txt'  # estensione del file
 sep = '\t' # separatore nel file risultato cioè in nome_file_RIS.est
@@ -124,7 +134,7 @@ for scelta in scelta_risp:
   testata += scelta + sep
 
 
-f.write(testata+'\n');
+f.write(testata+fine_riga);
 
 for r in etichette:
   c,i = r.split('_') # separa l'etichetta in c=classe, i=indice
@@ -134,7 +144,7 @@ for r in etichette:
     risp = ''
     for e in et_risp:
       risp += diz_risp[r][e]+sep
-    f.write(c+sep+i+sep+diz_dom[r]+sep+risp+'\n');
+    f.write(c+sep+i+sep+diz_dom[r]+sep+risp+fine_riga);
 
 f.close()
 
