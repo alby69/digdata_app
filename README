@@ -1,0 +1,134 @@
+data: 23/03/2012
+agg: 06/04/2012
+
+nome: estrai_test.py
+descrizione: Da un file _TEST estrae le domande, risposte e le salva in un file _RIS csv
+
+nome: csv2sqlite.py
+descrizione: Dal file _RIS e dal _SOL crea i file _question e _answer csv da importare in sqlite
+
+
+Procedura Script Estrazione domande e risposte
+
+1) usare pdftotext per convertire pdf in txt:
+  pdftotext -layout nome_file.pdf
+
+2) ripulire il file txt da parti non chiare ed aggiustarlo un po'.
+Se sono presenti anche le risposte, occorre spostarle in un file txt separato nome_file_SOL.txt
+
+3) modificare opportunamente la "sezione Parametri da inserire PRIMA DI ESEGUIRE LO SCRIPT" nello script.
+
+4) lanciare lo script e il risultato si trova in nome_file_RIS.txt che è un csv con questi campi:
+
+
+Per importare i dati nelle tabelle si usa lo script csv2sqlite che per ora popola le tabelle "question" e "answer"
+
+Le tabelle sono: answer, language, objective, objective_category, question, stats
+
+Riporto lo schema delle tabelle
+
+TABLE "answer"
+  ("id" 					Integer,
+	"question" 				Integer NOT NULL,
+	"answer" 				text NOT NULL,
+	"correct" 				Integer NOT NULL,
+	"sort" 					Integer NOT NULL, 
+	PRIMARY KEY("id"))
+
+TABLE "language"
+	("id" 					Integer,
+	"languagecode" 			char(2) NOT NULL,
+	"language" 				char(30) default NULL,
+	PRIMARY KEY("id"))
+
+TABLE "objective"
+	("id" 					Integer,
+	"objective_category" 	Integer NOT NULL,
+	"title" 				char(255) NOT NULL,
+	"category" 				char(10) NOT NULL,
+	"weight" 				Integer NOT NULL,
+	"sort" 					Integer NOT NULL,
+	"languagecode" 			char(2) not NULL,
+	"questions" 			Integer NOT NULL,
+	PRIMARY KEY("id"))
+
+TABLE "objective_category"
+	("id" 					Integer,
+	"title" 				char(255) NOT NULL,
+	"category" 				char(20) NOT NULL,
+	"languagecode" 			char(2) NOT NULL,
+	"questions" 			Integer NOT NULL,
+	PRIMARY KEY("id"))
+
+TABLE "question"
+	("id" 					Integer,
+	"languagecode" 			char(2) not NULL,
+	"category" 				char(10) NOT NULL,
+	"type" 					Integer NOT NULL,
+	"question" 				text NOT NULL,
+	"explanation" 			text,
+	"freeTextAnswer" 		text,
+	"severity" 				Integer NOT NULL,
+	PRIMARY KEY("id"))
+
+TABLE "stats"
+	("id" 					Integer,
+	"category" 				char(20) NOT NULL,
+	"numberquestions"  		Integer NOT NULL,
+	"correctanswers"  		Integer NOT NULL,
+	"points" 				Integer NOT NULL,
+	"maxpoints" 			Integer NOT NULL,
+	"examdate"  			DATETIME NOT NULL,
+	PRIMARY KEY("id"))
+ 
+
+
+Schema codifica domande
+-----------------------
+Area tematica, Anno Accademico, Università di riferimento, Numero domanda
+
+Codici
+
+Area tematica
+
+dove è possibile usare la classe di concorso indicata nel file. Se ne sceglie una se il test si riferisve a piu classi Es.: 
+
+A345 è un test di inglese
+
+A17 è un test di discipline aziendali
+
+INVECE per le domande di indirizzo (comuni a più classi di concorso) al posto del codice della classe usiamo questa denominazione
+
+Arte e musica = AM
+
+Economico Giuridico = EG
+
+Lingue Straniere = LS
+
+Linguistico Letterario = LL
+
+Matematica e fisica Informatico = MF
+
+Scienze motorie = SM
+
+Scienze Naturali = SN
+
+Scienze Umane = SU
+
+Tecnologico = TE
+
+Anno Accademico
+
+2007/2008  = 08
+
+Università di Riferimento
+
+Università di Pisa = PA (Prima e ultima lettera Sperando che non ci siano conflitti)(Lecce è SO - uniSalentO)
+
+Numero di domanda
+
+a tre cifre
+
+Quindi potremmo avere un elenco di domande:
+
+MF06BI047  che equivale alla domanda 47, dell'università di Bari, dell'anno accademico 2005/06, test di indirizzo Matematica Fisica Informatica)
